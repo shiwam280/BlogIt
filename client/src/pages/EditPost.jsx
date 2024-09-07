@@ -2,7 +2,6 @@ import { useContext, useEffect, useState } from "react";
 import { ImCross } from "react-icons/im";
 import { userContext } from "../context/UserContext";
 import axios from "axios";
-import { URL } from "./url";
 import { useNavigate, useParams } from "react-router-dom";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
@@ -55,7 +54,7 @@ const EditPost = () => {
 
   const fetchPosts = async () => {
     try {
-      const res = await axios.get(URL + "/api/posts/" + postId);
+      const res = await axios.get("/posts/" + postId);
       console.log(res);
 
       setTitle(res.data.title);
@@ -85,7 +84,7 @@ const EditPost = () => {
 
       //image Upload
       try {
-        const imgUpload = await axios.post(URL + "/api/upload", data, {
+        const imgUpload = await axios.post("/upload", data, {
           headers: { "Content-Type": "multipart/form-data" },
         });
         post.photo = imgUpload.data.url;
@@ -95,7 +94,7 @@ const EditPost = () => {
     }
 
     try {
-      const res = await axios.put(URL + "/api/posts/" + postId, post, {
+      const res = await axios.put("/posts/" + postId, post, {
         withCredentials: true,
       });
       navigate("/posts/post/" + res.data._id);

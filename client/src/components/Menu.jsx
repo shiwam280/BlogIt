@@ -1,7 +1,6 @@
 import { useContext } from "react";
 import { userContext } from "../context/UserContext";
 import axios from "axios";
-import { URL } from "../pages/url";
 import { Link, useNavigate } from "react-router-dom";
 
 const Menu = () => {
@@ -11,7 +10,7 @@ const Menu = () => {
 
   const handleLogout = async () => {
     try {
-      const res = await axios.get(URL + "/api/auth/logout");
+      const res = await axios.get("/auth/logout");
       setUser(null);
       navigate("/login");
     } catch (err) {

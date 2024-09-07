@@ -1,7 +1,6 @@
 import axios from "axios";
 import { BiEdit } from "react-icons/bi";
 import { MdDelete } from "react-icons/md";
-import { URL } from "../pages/url";
 import { useContext } from "react";
 import { userContext } from "../context/UserContext";
 
@@ -10,7 +9,7 @@ const Comment = ({ c, post }) => {
 
   const deleteComment = async (id) => {
     try {
-      await axios.delete(URL + "/api/comments/" + id, {
+      await axios.delete("/comments/" + id, {
         withCredentials: true,
       });
       window.location.reload(true);

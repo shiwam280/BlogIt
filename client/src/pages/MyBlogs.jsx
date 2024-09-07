@@ -2,7 +2,6 @@ import { useContext, useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { userContext } from "../context/UserContext";
 import axios from "axios";
-import { URL } from "./url";
 import Loader from "../components/Loader";
 import HomePosts from "../components/HomePosts";
 
@@ -16,7 +15,7 @@ const MyBlogs = () => {
   const fetchPosts = async () => {
     setLoader(true);
     try {
-      const res = await axios.get(URL + "/api/posts/user/" + user._id);
+      const res = await axios.get("/posts/user/" + user._id);
       setPosts(res.data);
       if (res.data.length === 0) {
         setNoResults(true);

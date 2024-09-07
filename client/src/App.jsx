@@ -9,6 +9,9 @@ import EditPost from "./pages/EditPost";
 import Profile from "./pages/Profile";
 import { UserContextProvider } from "./context/UserContext";
 import MyBlogs from "./pages/MyBlogs";
+import axios from "axios";
+
+axios.defaults.baseURL = import.meta.env.VITE_BASE_URL;
 
 const App = () => {
   const router = createBrowserRouter([

@@ -10,15 +10,12 @@ const Navbar = () => {
   const [prompt, setPrompt] = useState("");
   const navigate = useNavigate();
   const path = useLocation().pathname;
-  // console.log(param);
-  // console.log(prompt);
 
   const showMenu = () => {
     setMenu(!menu);
   };
 
   const { user } = useContext(userContext);
-  // console.log(user);
 
   return (
     <div className="flex items-center justify-between px-6 md:px-[200px] py-4">

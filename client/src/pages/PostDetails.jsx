@@ -3,7 +3,6 @@ import { MdDelete } from "react-icons/md";
 import Comment from "../components/Comment";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
-import { URL } from "./url";
 import { useContext, useEffect, useState } from "react";
 import { userContext } from "../context/UserContext";
 import Loader from "../components/Loader";
@@ -20,7 +19,7 @@ const PostDetails = () => {
   const fetchPost = async () => {
     SetLoader(true);
     try {
-      const res = await axios.get(URL + "/api/posts/" + postId, {
+      const res = await axios.get("/posts/" + postId, {
         withCredentials: true,
       });
       setPost(res.data);
@@ -33,7 +32,7 @@ const PostDetails = () => {
 
   const handleDelete = async () => {
     try {
-      await axios.delete(URL + "/api/posts/" + postId, {
+      await axios.delete("/posts/" + postId, {
         withCredentials: true,
       });
       navigate("/");
@@ -47,7 +46,7 @@ const PostDetails = () => {
   }, [postId]);
 
   const fetchComments = async () => {
-    const res = await axios.get(URL + "/api/comments/post/" + postId);
+    const res = await axios.get("/comments/post/" + postId);
     setComments(res.data);
   };
 
@@ -59,7 +58,7 @@ const PostDetails = () => {
     e.preventDefault();
     try {
       const res = await axios.post(
-        URL + "/api/comments/create",
+        "/comments/create",
         {
           comment: comment,
           author: user.username,

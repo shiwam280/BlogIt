@@ -2,7 +2,6 @@ import { useContext, useState } from "react";
 import { ImCross } from "react-icons/im";
 import { userContext } from "../context/UserContext";
 import axios from "axios";
-import { URL } from "./url";
 import { useNavigate } from "react-router-dom";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
@@ -85,7 +84,7 @@ const CreatePost = () => {
 
       //image Upload
       try {
-        const imgUpload = await axios.post(URL + "/api/upload", data, {
+        const imgUpload = await axios.post("/upload", data, {
           headers: { "Content-Type": "multipart/form-data" },
         });
         post.photo = imgUpload.data.url;
@@ -96,7 +95,7 @@ const CreatePost = () => {
 
     //post upload
     try {
-      const res = await axios.post(URL + "/api/posts/create", post, {
+      const res = await axios.post("/posts/create", post, {
         withCredentials: true,
       });
       navigate("/posts/post/" + res.data._id);

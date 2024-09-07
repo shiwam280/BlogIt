@@ -2,7 +2,6 @@ import { useContext, useEffect, useState } from "react";
 import ProfilePosts from "../components/ProfilePosts";
 import { userContext } from "../context/UserContext";
 import axios from "axios";
-import { URL } from "./url";
 import { useNavigate, useParams } from "react-router-dom";
 
 const Profile = () => {
@@ -17,7 +16,7 @@ const Profile = () => {
 
   const fetchProfile = async () => {
     try {
-      const res = await axios.get(URL + "/api/users/" + user._id);
+      const res = await axios.get("/users/" + user._id);
       setUsername(res.data.username);
       setEmail(res.data.email);
     } catch (err) {
@@ -27,7 +26,7 @@ const Profile = () => {
 
   const fetchUserPosts = async () => {
     try {
-      const res = await axios.get(URL + "/api/posts/user/" + user._id);
+      const res = await axios.get("/posts/user/" + user._id);
       setPosts(res.data);
     } catch (err) {
       console.log(err);
@@ -46,7 +45,7 @@ const Profile = () => {
     setUpdated(false);
     try {
       const res = await axios.put(
-        URL + "/api/users/" + user._id,
+        "/users/" + user._id,
         { username, email },
         { withCredentials: true }
       );
@@ -59,7 +58,7 @@ const Profile = () => {
 
   const handleUserDelete = async () => {
     try {
-      const res = await axios.delete(URL + "/api/users/" + user._id, {
+      const res = await axios.delete("/users/" + user._id, {
         withCredentials: true,
       });
       setUser(null);
