@@ -4,14 +4,53 @@ import { userContext } from "../context/UserContext";
 import axios from "axios";
 import { URL } from "./url";
 import { useNavigate } from "react-router-dom";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
+
+const modules = {
+  toolbar: [
+    [{ header: [1, 2, 3, 4, 5, 6, false] }],
+    [{ list: "ordered" }, { list: "bullet" }, { list: "check" }],
+    ["bold", "italic", "underline", "strike"], // toggled buttons
+    ["blockquote", "code-block"],
+    ["link", "image", "video", "formula"],
+    ["clean"],
+  ],
+};
+
+const formats = [
+  "header",
+  "bold",
+  "italic",
+  "underline",
+  "strike",
+  "blockquote",
+  "list",
+  "bullet",
+  "indent",
+  "link",
+  "image",
+];
+
+const customStyles = {
+  quillEditor: `
+    .quill > .ql-container {
+      border: none !important; /* Remove the inner border */
+    }
+    .quill > .ql-container.ql-snow {
+      border: none !important; /* Ensure the editor's theme doesn't add a border */
+    }
+  `,
+};
 
 const CreatePost = () => {
   const [title, setTitle] = useState("");
   const [desc, setDesc] = useState("");
-  const [file, SetFile] = useState(null);
+  const [file, setFile] = useState(null);
   const { user } = useContext(userContext);
   const [category, setCategory] = useState("");
   const [categories, setCategories] = useState([]);
+  console.log(desc);
 
   const navigate = useNavigate();
 
@@ -43,12 +82,13 @@ const CreatePost = () => {
       const filename = Date.now() + file.name;
       data.append("img", filename);
       data.append("file", file);
-      post.photo = filename;
 
       //image Upload
       try {
-        const imgUpload = await axios.post(URL + "/api/upload", data);
-        // console.log(imgUpload.data);
+        const imgUpload = await axios.post(URL + "/api/upload", data, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+        post.photo = imgUpload.data.url;
       } catch (err) {
         console.log(err);
       }
@@ -60,7 +100,6 @@ const CreatePost = () => {
         withCredentials: true,
       });
       navigate("/posts/post/" + res.data._id);
-      // console.log(res.data);
     } catch (err) {
       console.log(err);
     }
@@ -68,24 +107,26 @@ const CreatePost = () => {
 
   return (
     <div>
-      <div className="px-6 md:px-[200px] mt-8">
+      <div className="px-6 md:px-[200px] min-h-[80vh] mt-8">
         <h1 className="font-bold text-2xl">Create a post</h1>
         <form className="w-full flex flex-col space-y-4 md:space-y-8 mt-4">
           <input
             type="text"
             placeholder="Enter post title"
-            className="px-4 py-2 outline-none"
+            className="px-4 py-2 outline-none shadow-md border rounded-lg"
+            value={title}
             onChange={(e) => setTitle(e.target.value)}
           />
           <input
             type="file"
-            className="px-4"
-            onChange={(e) => SetFile(e.target.files[0])}
+            className="px-4 border py-2 rounded-lg shadow-sm outline-none cursor-pointer"
+            onChange={(e) => setFile(e.target.files[0])}
           />
+
           <div className="flex flex-col">
             <div className="flex items-center space-x-4 md:space-x-8">
               <input
-                className="px-4 py-2 outline-none"
+                className="px-4 py-2 outline-none shadow-md border rounded-lg"
                 placeholder="Enter post category"
                 type="text"
                 value={category}
@@ -117,13 +158,19 @@ const CreatePost = () => {
               ))}
             </div>
           </div>
-          <textarea
-            rows={15}
-            cols={30}
-            className="px-4 py-2 outline-none"
-            placeholder="Enter post description"
-            onChange={(e) => setDesc(e.target.value)}
-          />
+
+          <div>
+            <style>{customStyles.quillEditor}</style>
+            <ReactQuill
+              theme="snow"
+              className="h-56 p-4 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 mb-6"
+              modules={modules}
+              formats={formats}
+              value={desc}
+              onChange={(newValue) => setDesc(newValue)}
+            />
+          </div>
+
           <button
             onClick={handleCreate}
             className="bg-black w-full md:w-[20%] mx-auto text-white font-semibold px-4 py-2 md:text-xl text-lg"

@@ -5,11 +5,13 @@ const authRoute = require("./routes/auth");
 const userRoute = require("./routes/users");
 const postRoute = require("./routes/posts");
 const commentRoute = require("./routes/comments");
+const { S3Client, PutObjectCommand } = require("@aws-sdk/client-s3");
 const cookieParser = require("cookie-parser");
 const multer = require("multer");
 const mongoose = require("mongoose");
 const app = express();
 const dotenv = require("dotenv");
+const fs = require("fs");
 
 dotenv.config();
 app.use(express.json());
@@ -22,35 +24,38 @@ app.use("/api/users", userRoute);
 app.use("/api/posts", postRoute);
 app.use("/api/comments", commentRoute);
 
-// -----------------------------Deployment-------------------------------------
-const __dirname1 = path.resolve();
-if (process.env.NODE_ENV === "production") {
-  app.use(express.static(path.join(__dirname1, "/client/dist")));
-  app.get("*", (req, res) => {
-    res.sendFile(path.resolve(__dirname1, "client", "dist", "index.html"));
+const bucket = "shiwam-blogging-app";
+
+async function uploadToS3(path, originalFilename, mimetype) {
+  const client = new S3Client({
+    region: "eu-north-1",
+    credentials: {
+      accessKeyId: process.env.S3_ACCESS_KEY,
+      secretAccessKey: process.env.S3_SECRET_ACCESS_KEY,
+    },
   });
-} else {
-  app.get("/", (req, res) => {
-    res.send("API is running");
-  });
+
+  const parts = originalFilename.split(".");
+  const ext = parts[parts.length - 1];
+  const newFilename = Date.now() + "." + ext;
+  await client.send(
+    new PutObjectCommand({
+      Bucket: bucket,
+      Body: fs.readFileSync(path),
+      Key: newFilename,
+      ContentType: mimetype,
+      ACL: "public-read",
+    })
+  );
+  return `https://${bucket}.s3.amazonaws.com/${newFilename}`;
 }
 
-// -------------------------------Deployment----------------------------------------
-
 //Image Upload
-const storage = multer.diskStorage({
-  destination: (req, file, fn) => {
-    fn(null, "images");
-  },
-  filename: (req, file, fn) => {
-    fn(null, req.body.img);
-    // fn(null, "image1.jpg");
-  },
-});
-
-const upload = multer({ storage: storage });
-app.post("/api/upload", upload.single("file"), (req, res) => {
-  res.status(200).json("Images has been uploaded successfully");
+const upload = multer({ dest: "/tmp" });
+app.post("/api/upload", upload.single("file"), async (req, res) => {
+  const { path, originalname, mimetype } = req.file;
+  const url = await uploadToS3(path, originalname, mimetype);
+  res.status(200).json({ url });
 });
 
 const connectDB = async () => {

@@ -14,14 +14,12 @@ const Profile = () => {
   const { user, setUser } = useContext(userContext);
   const [updated, setUpdated] = useState(false);
   const navigate = useNavigate();
-  // console.log(user);
 
   const fetchProfile = async () => {
     try {
       const res = await axios.get(URL + "/api/users/" + user._id);
       setUsername(res.data.username);
       setEmail(res.data.email);
-      // setPassword(res.data.password);
     } catch (err) {
       console.log(err);
     }
@@ -53,7 +51,6 @@ const Profile = () => {
         { withCredentials: true }
       );
       setUpdated(true);
-      // console.log(res.data);
     } catch (err) {
       console.log(err);
       setUpdated(false);
@@ -78,9 +75,9 @@ const Profile = () => {
       <div className="px-8 mt-8 md:px-[200px] flex flex-col-reverse md:flex-row">
         <div className="flex flex-col md:w-[70%] w-full mt-8 md:mt-0">
           <h1 className="text-xl font-bold mb-4">Your posts:</h1>
-          {posts?.map((p) => {
-            <ProfilePosts key={p._id} p={p} />;
-          })}
+          {posts.map((p) => (
+            <ProfilePosts key={p._id} p={p} />
+          ))}
         </div>
         <div className="flex flex-col space-y-4 md:w-[30%] w-full md:items-end md:sticky md:top-12">
           <div className="flex flex-col space-y-4">

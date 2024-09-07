@@ -1,7 +1,7 @@
 const Footer = () => {
   return (
     <>
-      <div className="mt-8 w-full bg-black px-8 md:px-[400px] flex md:flex-row flex-col space-y-6 md:space-y-0 justify-between">
+      <div className="mt-10 w-full bg-black px-8 md:px-[400px] flex md:flex-row flex-col space-y-6 md:space-y-0 justify-between">
         <div className="flex flex-col text-white">
           <p>Featured Blogs</p>
           <p>Most Viewed</p>

@@ -9,17 +9,17 @@ import { userContext } from "../context/UserContext";
 
 const Home = () => {
   const { search } = useLocation();
-  // console.log(search);
   const [posts, setPosts] = useState([]);
   const [noResults, setNoResults] = useState(false);
   const [loader, setLoader] = useState(false);
   const { user } = useContext(userContext);
-  // console.log(user);
 
   const fetchPosts = async () => {
     setLoader(true);
     try {
-      const res = await axios.get(URL + "/api/posts/" + search);
+      const res = await axios.get(URL + "/api/posts/" + search, {
+        withCredentials: true,
+      });
       setPosts(res.data);
       if (res.data.length === 0) {
         setNoResults(true);
@@ -36,6 +36,7 @@ const Home = () => {
   useEffect(() => {
     fetchPosts();
   }, [search]);
+
   return (
     <div className="px-8 md:px-[200px] min-h-[80vh]">
       {loader ? (

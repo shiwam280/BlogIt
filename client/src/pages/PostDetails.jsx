@@ -3,7 +3,7 @@ import { MdDelete } from "react-icons/md";
 import Comment from "../components/Comment";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
-import { URL, IF } from "./url";
+import { URL } from "./url";
 import { useContext, useEffect, useState } from "react";
 import { userContext } from "../context/UserContext";
 import Loader from "../components/Loader";
@@ -20,8 +20,9 @@ const PostDetails = () => {
   const fetchPost = async () => {
     SetLoader(true);
     try {
-      const res = await axios.get(URL + "/api/posts/" + postId);
-      // console.log(res.data);
+      const res = await axios.get(URL + "/api/posts/" + postId, {
+        withCredentials: true,
+      });
       setPost(res.data);
       SetLoader(false);
     } catch (err) {
@@ -67,8 +68,6 @@ const PostDetails = () => {
         },
         { withCredentials: true }
       );
-      // fetchComments();
-      // setComment("");
       window.location.reload(true);
     } catch (err) {
       console.log(err);
@@ -108,8 +107,15 @@ const PostDetails = () => {
               <p>{new Date(post.updatedAt).toString().slice(16, 24)}</p>
             </div>
           </div>
-          <img src={IF + post.photo} alt="" className="w-full mx-auto mt-8" />
-          <p className="mx-auto mt-8">{post.desc}</p>
+          <img
+            src={post.photo}
+            alt=""
+            className="w-full h-96 mx-auto mt-8 object-cover"
+          />
+          <p
+            className="mx-auto mt-8"
+            dangerouslySetInnerHTML={{ __html: post.desc }}
+          />
           <div className="flex items-center mt-8 space-x-4 font-semibold">
             <p>Categories: </p>
             <div className="flex items-center justify-center space-x-2">

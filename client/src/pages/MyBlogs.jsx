@@ -8,12 +8,10 @@ import HomePosts from "../components/HomePosts";
 
 const MyBlogs = () => {
   const { search } = useLocation();
-  // console.log(search);
   const [posts, setPosts] = useState([]);
   const [noResults, setNoResults] = useState(false);
   const [loader, setLoader] = useState(false);
   const { user } = useContext(userContext);
-  // console.log(user);
 
   const fetchPosts = async () => {
     setLoader(true);

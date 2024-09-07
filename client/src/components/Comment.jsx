@@ -7,6 +7,7 @@ import { userContext } from "../context/UserContext";
 
 const Comment = ({ c, post }) => {
   const { user } = useContext(userContext);
+
   const deleteComment = async (id) => {
     try {
       await axios.delete(URL + "/api/comments/" + id, {
@@ -17,8 +18,6 @@ const Comment = ({ c, post }) => {
       console.log(err);
     }
   };
-  // console.log(post.userId);
-  // console.log(user._id);
 
   return (
     <div className="px-2 py-2 bg-gray-200 rounded-lg my-2">

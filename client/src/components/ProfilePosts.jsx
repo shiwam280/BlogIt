@@ -1,11 +1,9 @@
-import { IF } from "../pages/url";
-
 const ProfilePosts = ({ p }) => {
   return (
-    <div className="w-full flex mt-8 space-x-4">
+    <div className="w-full flex mt-8 space-x-4 shadow-gray-400 rounded-lg border outline-none">
       {/* left */}
       <div className="w-[35%] h-[200px] flex justify-center items-center">
-        <img src={IF + p.photo} alt="" className="h-full w-full object-cover" />
+        <img src={p.photo} alt="" className="h-full w-full object-cover" />
       </div>
       {/* right */}
       <div className="flex flex-col w-[65%]">
@@ -19,7 +17,12 @@ const ProfilePosts = ({ p }) => {
             <p>{new Date(p.updatedAt).toString().slice(16, 24)}</p>
           </div>
         </div>
-        <p className="text-sm md:text-lg">{p.desc}</p>
+        <p
+          className="text-sm md:text-lg"
+          dangerouslySetInnerHTML={{
+            __html: p.desc.slice(0, 200) + "...Read More",
+          }}
+        />
       </div>
     </div>
   );
